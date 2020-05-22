@@ -1,0 +1,5 @@
++ rm -Rf /home/student/share/496/hw5/_build
+rm: cannot remove '/home/student/share/496/hw5/_build/_log': Text file busy
+Command exited with code 1.
+### Starting build.
+# Compilation unsuccessful.

@@ -1,0 +1,109 @@
+(* Test File for CS496 HW2 *)
+
+(* Support Functions ***************************************)
+
+(* Checks 2 lists of unique elements for equivelence *)
+let rec eq : 'a list -> 'a list -> bool =
+ fun (a:'a list) (b:'a list) ->
+  if ((a = [] && b <> []) || (a <> [] && b = []) || (List.length a <> List.length b)) then false else  
+  match a with
+   | [] -> if b = [] then true else false 
+   | h::t -> eq t (List.filter(fun x -> x <> h) b);;
+
+(* Example Trees for Testing *******************************)
+
+let t1 = Node('a',Node('b',Leaf 1, Leaf 2), Node('c',Leaf 3,Leaf 4));;
+
+let t2 = Node('d',Leaf 5, Leaf 6);;
+
+let t3 = (Leaf 6);;
+
+let t4 = Node('e',Node('f',Leaf 7, Leaf 8), Leaf 9);;
+
+let t5 = Node('x',Node('y',Node('z',Leaf 0,Leaf 0),Node('z',Leaf 0,Leaf 0)),Node('y',Node('z',Leaf 0,Leaf 0),Node('z',Leaf 0,Leaf 0)));;
+
+(* Test dTree_height ***************************************)
+
+(* Normal Operation *)
+print_string "Test 1: "; (dTree_height t1) = 2;;
+
+print_string "Test 2: "; (dTree_height t2) = 1;;
+
+print_string "Test 3: "; (dTree_height t4) = 2;;
+
+(* Root is a Leaf *)
+print_string "Test 4: "; (dTree_height t3) = 0;;
+
+
+(* Test dTree_size *****************************************)
+
+(* Normal Operation *)
+print_string "Test 5: "; (dTree_size t1) = 7;;
+
+print_string "Test 6: "; (dTree_size t2) = 3;;
+
+print_string "Test 7: "; (dTree_size t4) = 5;;
+  
+(* Root is a Leaf *)
+print_string "Test 8: "; (dTree_size t3) = 1;; 
+
+(* Test dTree_paths ****************************************)
+(* Note: Order is arbitrary, so equality check function is used *)
+
+(* Normal Operation *)
+print_string "Test 9: "; (eq (dTree_paths t1) [[0;0];[0;1];[1;0];[1;1]]);;
+
+print_string "Test 10: "; (eq (dTree_paths t2) [[0];[1]]);;
+
+print_string "Test 11: "; (eq (dTree_paths t4) [[0;0];[0;1];[1]]);;
+
+(* Root is a Leaf *)
+print_string "Test 12: "; (eq (dTree_paths t3) []);;
+                                              
+(* Test dTree_is_perfect ***********************************)
+
+(* Normal Operation *)
+print_string "Test 13: "; (dTree_is_perfect t1 = true);;
+
+print_string "Test 14: "; (dTree_is_perfect t2 = true);;
+
+print_string "Test 15: "; (dTree_is_perfect t4 = false);;
+
+(* Root is a Leaf *)
+print_string "Test 16: "; (dTree_is_perfect t3 = true);;
+
+(* Test dTree_map ******************************************)
+
+(* Normal Operation *)
+print_string "Test 17: "; (dTree_map Char.uppercase (fun x -> x+1) t1) = Node('A',Node('B',Leaf 2, Leaf 3), Node('C',Leaf 4,Leaf 5));;
+
+(* Root is a Node *)
+print_string "Test 18: "; (dTree_map Char.uppercase (fun x -> x+1) t3) = Leaf 7;;
+
+
+(* Application Tests ***************************************)
+
+(* Test list_to_Tree ***************************************)
+print_string "Test 19: "; (list_to_tree ['x';'y';'z']) =
+                            Node('x',
+                                 Node('y',
+                                      Node('z',Leaf 0,Leaf 0),
+                                      Node('z',Leaf 0,Leaf 0)),
+                                 Node('y',
+                                      Node('z',Leaf 0,Leaf 0),
+                                      Node('z',Leaf 0,Leaf 0))
+                              );;
+
+(* Test replace_leaf_at ************************************)
+print_string "Test 20: "; (replace_leaf_at t5 [([0;0;0],0); ([0;0;1],1); ([0;1;0],1); ([0;1;1],0); ([1;0;0],1); ([1;0;1],0); ([1;1;0],0); ([1;1;1],1)])
+                          = Node('x',
+                                 Node('y',
+                                      Node('z',Leaf 0,Leaf 1),
+                                      Node('z',Leaf 1,Leaf 0)),
+                                 Node('y',
+                                      Node('z',Leaf 1,Leaf 0),
+                                      Node('z',Leaf 0,Leaf 1))
+                              );;
+
+
+print_string "Note: bf_to_dTree has multiple acceptable trees, and thats a messy equality check. Test on your own!";;
